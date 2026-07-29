@@ -17,14 +17,14 @@ export const registerUser = async (req, res) => {
     const registeredUser = await register(user);
     const token = generateToken(registeredUser);
     res.cookie('jwttoken',token, cookieOptions)
-    return res.status(201).json({ data: {
+    return res.status(201).json({ ok: true, data: {
       _id: registeredUser._id,
       name: registeredUser.name,
       email: registeredUser.email,
       isAdmin: registeredUser.isAdmin,
     }});
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ ok: false, message: error.message });
   }
 };
 
@@ -34,7 +34,7 @@ export const loginUser = async (req, res) => {
     const loggedInUser = await login(user);
     const token = generateToken(loggedInUser);
     res.cookie('jwttoken',token, cookieOptions)
-    return res.status(200).json({ data: {
+    return res.status(200).json({ ok: true, data: {
       _id: loggedInUser._id,
       name: loggedInUser.name,
       email: loggedInUser.email,
@@ -42,6 +42,6 @@ export const loginUser = async (req, res) => {
       token
     }});
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ ok: false, message: error.message });
   }
 }

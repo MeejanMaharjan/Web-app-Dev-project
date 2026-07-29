@@ -30,6 +30,10 @@ app.use(
 )
 app.use(express.json());
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ ok: true, message: 'Server is running' });
+});
+
 app.use('/movies', MovieRouter);
 app.use('/auth', authRouter);
 
