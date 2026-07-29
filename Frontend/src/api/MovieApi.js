@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const MovieApi = axios.create({
-  baseURL: 'http://localhost:3000/Movies'
+  baseURL: 'https://web-app-dev-project-server.onrender.com/movies'
 });
 
 export const getMovies = () => {
