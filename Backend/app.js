@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from 'cors';
+import cookieParser from 'cookie-parser'
 import MovieRouter from './route/MovieRoute.js';
 import authRouter from './route/AuthRoutes.js';
 import { DBConnection } from './config/db.js';
@@ -9,8 +10,24 @@ const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 3001;
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTED_URL
+].filter(Boolean)
 
-app.use(cors());
+app.use(cookieParser())
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true)
+      }
+      return callback(new Error('The request is not allowed by CORS policy'))
+    },
+
+    Credentials: true,
+  }),
+)
 app.use(express.json());
 
 app.use('/movies', MovieRouter);
