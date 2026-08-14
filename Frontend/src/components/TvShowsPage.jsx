@@ -1,30 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getTvShows } from '../api/TvShowApi';
+import MovieCard from './MovieCard';
+import MovieDetails from './MovieDetails';
 
-export default function TvShowsPage() {
+export default function TvShowsPage({ watchlist, onToggleWatchlist }) {
+  const [shows, setShows] = useState([]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedShow, setSelectedShow] = useState(null);
+
+  useEffect(() => {
+    async function fetchShows() {
+      try {
+        const response = await getTvShows();
+        setShows(response.data);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Could not load TV shows. Is the backend running?');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchShows();
+  }, []);
+
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      <div className="y2k-panel p-8 text-center relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px)',
-          }}
-        />
-        <h1 className="text-3xl md:text-4xl font-display y2k-gradient-text mb-4 relative">
-          📺 TV Shows
-        </h1>
-        <p className="blink-text font-display text-mdb-yellow text-lg mb-6 relative">
-          UNDER CONSTRUCTION
-        </p>
-        <div className="marquee y2k-border bg-mdb-void py-2 mb-6 relative">
-          <span className="font-body text-mdb-cyan text-sm">
-            🎬 TV SHOWS COMING SOON 🎬 PLEASE STAND BY 🎬 CHECK BACK LATER 🎬
-          </span>
+    <main className="max-w-7xl mx-auto px-6 py-8">
+      <h2 className="text-xl font-display mb-6 text-mdb-cream border-b-4 border-mdb-cyan pb-2 flex justify-between items-center">
+        <span>
+          <span className="blink-text text-mdb-yellow">★</span> TV SHOWS <span className="blink-text text-mdb-yellow">★</span>
+        </span>
+        <span className="text-xs font-normal font-body text-mdb-taupe">{shows.length} showing</span>
+      </h2>
+
+      {error ? (
+        <div className="y2k-border p-4 bg-mdb-hotpink/20 text-mdb-yellow text-sm font-body max-w-md mx-auto mt-8 text-center">
+          {error}
         </div>
-        <p className="font-comic text-mdb-taupe text-sm relative">
-          Our engineers (a guy with a VCR) are working hard to bring you the TV Shows section.
-        </p>
-      </div>
+      ) : isLoading ? (
+        <div className="y2k-panel text-center mt-16 p-8 max-w-md mx-auto text-mdb-cream">
+          <p className="font-display text-lg blink-text">Loading titles...</p>
+        </div>
+      ) : shows.length === 0 ? (
+        <div className="y2k-panel text-center mt-16 p-8 max-w-md mx-auto text-mdb-cream">
+          <p className="font-display text-lg mb-1">No TV shows yet</p>
+          <p className="text-xs text-mdb-taupe font-body">Check back later.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {shows.map((show) => (
+            <MovieCard
+              key={show._id}
+              movie={show}
+              onSelect={() => setSelectedShow(show)}
+              watchlist={watchlist}
+              onToggleWatchlist={onToggleWatchlist}
+              currentUser={null}
+            />
+          ))}
+        </div>
+      )}
+
+      <MovieDetails
+        movie={selectedShow}
+        onClose={() => setSelectedShow(null)}
+        watchlist={watchlist}
+        onToggleWatchlist={onToggleWatchlist}
+      />
     </main>
   );
 }

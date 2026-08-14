@@ -287,7 +287,10 @@ export default function App() {
 
         <Routes>
           <Route path="/" element={<HomeGrid />} />
-          <Route path="/tv-shows" element={<TvShowsPage />} />
+          <Route
+            path="/tv-shows"
+            element={<TvShowsPage watchlist={watchlist} onToggleWatchlist={toggleWatchlist} />}
+          />
           <Route
             path="/watchlist"
             element={

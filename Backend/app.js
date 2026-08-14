@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import MovieRouter from './route/MovieRoute.js';
+import TvShowRouter from './route/TvShowRoute.js';
 import authRouter from './route/AuthRoutes.js';
 import { DBConnection } from './config/db.js';
 
@@ -35,6 +36,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/movies', MovieRouter);
+app.use('/tvshows', TvShowRouter);
 app.use('/auth', authRouter);
 
 await DBConnection();
