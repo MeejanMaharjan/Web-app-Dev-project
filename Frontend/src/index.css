@@ -28,93 +28,96 @@ body {
 }
 
 /* Chunky Y2K bevel primitives */
-.y2k-border {
-  border: 4px outset var(--color-mdb-cyan);
+@layer components {
+  .y2k-border {
+    border: 4px outset var(--color-mdb-cyan);
+  }
+
+  .y2k-panel {
+    border: 4px outset var(--color-mdb-purple);
+    box-shadow: 6px 6px 0 var(--color-mdb-hotpink), 10px 10px 0 rgba(0, 0, 0, 0.4);
+    background: var(--color-mdb-blue);
+  }
+
+  .y2k-btn {
+    border: 3px outset var(--color-mdb-lime);
+    background: linear-gradient(180deg, var(--color-mdb-lime), var(--color-mdb-green));
+    box-shadow: 3px 3px 0 #000;
+    transition: transform 0.1s ease;
+  }
+  .y2k-btn:active {
+    border-style: inset;
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  .y2k-gradient-text {
+    background: linear-gradient(90deg, var(--color-mdb-hotpink), var(--color-mdb-cyan), var(--color-mdb-lime), var(--color-mdb-yellow));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-shift 3s linear infinite;
+  }
+
+  .y2k-glow {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .y2k-glow:hover {
+    box-shadow: 0 0 12px var(--color-mdb-cyan), 0 0 24px var(--color-mdb-hotpink);
+    transform: scale(1.03);
+  }
+
+  .sparkle-hover {
+    position: relative;
+  }
+  .sparkle-hover::before,
+  .sparkle-hover::after {
+    content: '✦';
+    position: absolute;
+    opacity: 0;
+    color: var(--color-mdb-yellow);
+    pointer-events: none;
+  }
+  .sparkle-hover::before { top: -8px; left: -8px; }
+  .sparkle-hover::after { bottom: -8px; right: -8px; }
+  .sparkle-hover:hover::before,
+  .sparkle-hover:hover::after {
+    animation: sparkle-pop 0.6s ease;
+    opacity: 1;
+  }
+
+  .blink-text {
+    animation: blink 1s steps(1) infinite;
+  }
+
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee-scroll 14s linear infinite;
+  }
+
+  .y2k-icon {
+    filter: drop-shadow(1px 1px 0 var(--color-mdb-hotpink));
+  }
 }
 
-.y2k-panel {
-  border: 4px outset var(--color-mdb-purple);
-  box-shadow: 6px 6px 0 var(--color-mdb-hotpink), 10px 10px 0 rgba(0, 0, 0, 0.4);
-  background: var(--color-mdb-blue);
-}
-
-.y2k-btn {
-  border: 3px outset var(--color-mdb-lime);
-  background: linear-gradient(180deg, var(--color-mdb-lime), var(--color-mdb-green));
-  box-shadow: 3px 3px 0 #000;
-  transition: transform 0.1s ease;
-}
-.y2k-btn:active {
-  border-style: inset;
-  box-shadow: none;
-  transform: translate(2px, 2px);
-}
-
-.y2k-gradient-text {
-  background: linear-gradient(90deg, var(--color-mdb-hotpink), var(--color-mdb-cyan), var(--color-mdb-lime), var(--color-mdb-yellow));
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-shift 3s linear infinite;
-}
 @keyframes gradient-shift {
   to { background-position: 200% center; }
-}
-
-.y2k-glow {
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-.y2k-glow:hover {
-  box-shadow: 0 0 12px var(--color-mdb-cyan), 0 0 24px var(--color-mdb-hotpink);
-  transform: scale(1.03);
-}
-
-.sparkle-hover {
-  position: relative;
-}
-.sparkle-hover::before,
-.sparkle-hover::after {
-  content: '✦';
-  position: absolute;
-  opacity: 0;
-  color: var(--color-mdb-yellow);
-  pointer-events: none;
-}
-.sparkle-hover::before { top: -8px; left: -8px; }
-.sparkle-hover::after { bottom: -8px; right: -8px; }
-.sparkle-hover:hover::before,
-.sparkle-hover:hover::after {
-  animation: sparkle-pop 0.6s ease;
-  opacity: 1;
 }
 @keyframes sparkle-pop {
   0% { transform: scale(0) rotate(0); opacity: 0; }
   50% { transform: scale(1.4) rotate(90deg); opacity: 1; }
   100% { transform: scale(1) rotate(180deg); opacity: 0.8; }
 }
-
-.blink-text {
-  animation: blink 1s steps(1) infinite;
-}
 @keyframes blink {
   50% { opacity: 0; }
-}
-
-.marquee {
-  overflow: hidden;
-  white-space: nowrap;
-}
-.marquee span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee-scroll 14s linear infinite;
 }
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
-}
-
-.y2k-icon {
-  filter: drop-shadow(1px 1px 0 var(--color-mdb-hotpink));
 }
