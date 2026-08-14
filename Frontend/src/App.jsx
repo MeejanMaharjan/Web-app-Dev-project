@@ -26,6 +26,8 @@ export default function App() {
   const [watchlist, setWatchlist] = useState([]);
   const [totalMovies, setTotalMovies] = useState(0);
   const [avgRating, setAvgRating] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const MOVIES_PER_PAGE = 50;
 
   // Auth state — persist to sessionStorage so a refresh keeps the user logged in
   const [currentUser, setCurrentUser] = useState(() => {
@@ -135,6 +137,60 @@ export default function App() {
       movie.genre.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const totalPages = Math.max(1, Math.ceil(filteredMovies.length / MOVIES_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedMovies = filteredMovies.slice(
+    (safePage - 1) * MOVIES_PER_PAGE,
+    safePage * MOVIES_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  const getPageNumbers = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const pages = [1, 2, 3];
+    if (safePage > 4) {
+      pages.push('...');
+    } else {
+      pages.push(4);
+    }
+    if (!pages.includes(totalPages)) {
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
+  const Pagination = () => {
+    if (totalPages <= 1) return null;
+    return (
+      <div className="flex justify-center items-center gap-2 mt-8 font-display text-sm">
+        {getPageNumbers().map((page, idx) =>
+          page === '...' ? (
+            <span key={`ellipsis-${idx}`} className="text-mdb-taupe px-1">
+              ...
+            </span>
+          ) : (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 y2k-border transition-colors ${
+                page === safePage
+                  ? 'bg-mdb-lime text-mdb-void'
+                  : 'text-mdb-cream hover:bg-mdb-cream/10'
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
+      </div>
+    );
+  };
+
   const HomeGrid = () => (
     <main className="max-w-7xl mx-auto px-6 py-8">
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-mdb-cream">
@@ -198,20 +254,23 @@ export default function App() {
           <p className="text-xs text-mdb-taupe font-body">Try adjustments to your search keywords.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {filteredMovies.map((movie) => (
-            <MovieCard
-              key={movie._id}
-              movie={movie}
-              onSelect={() => setSelectedMovie(movie)}
-              watchlist={watchlist}
-              onToggleWatchlist={toggleWatchlist}
-              currentUser={currentUser}
-              onEdit={handleEditMovie}
-              onDelete={handleDeleteMovie}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {paginatedMovies.map((movie) => (
+              <MovieCard
+                key={movie._id}
+                movie={movie}
+                onSelect={() => setSelectedMovie(movie)}
+                watchlist={watchlist}
+                onToggleWatchlist={toggleWatchlist}
+                currentUser={currentUser}
+                onEdit={handleEditMovie}
+                onDelete={handleDeleteMovie}
+              />
+            ))}
+          </div>
+          <Pagination />
+        </>
       )}
     </main>
   );
